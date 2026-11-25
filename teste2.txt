@@ -1,0 +1,82 @@
+
+[
+    # Declaracoes de variaveis
+    nat contador = 0;
+    int temperatura = -25;
+    real pi = 3.14159;
+    simbolo inicial = 'A';
+    texto mensagem = "Teste do analisador lexico";
+    binario ligado = verdadeiro;
+
+    nat valor1, valor2, valor3;
+    real resultado;
+
+    # Operacoes aritmeticas
+    valor1 = 10 + 5;
+    valor2 = 20 - 3;
+    valor3 = 4 * 2;
+    resultado = 100 / 5;
+    resultado = 2 ^^ 3;
+
+    # Operadores relacionais
+    se (valor1 > valor2) [
+        imprimir("Maior");
+    ]
+
+    se (valor1 >= valor2) [
+        imprimir("Maior ou igual");
+    ]
+
+    se (valor1 < valor2) [
+        imprimir("Menor");
+    ]
+
+    se (valor1 <= valor2) [
+        imprimir("Menor ou igual");
+    ]
+
+    se (valor1 == valor2) [
+        imprimir("Igual");
+    ]
+
+    se (valor1 != valor2) [
+        imprimir("Diferente");
+    ]
+
+    # Operadores logicos
+    se (ligado && verdadeiro) [
+        imprimir("E logico");
+    ]
+
+    se (ligado || falso) [
+        imprimir("OU logico");
+    ]
+
+    se (!falso) [
+        imprimir("Negacao logica");
+    ]
+
+    # Deslocamento de bits
+    valor1 = valor1 << 2;
+    valor2 = valor2 >> 1;
+
+    # Estrutura enquanto
+    enquanto (contador < 10) [
+        contador = contador + 1;
+    ]
+
+    # Estrutura para
+    para (nat i = 0; i < 5; i = i + 1) [
+        imprimir(i);
+    ]
+
+    # Entrada de dados
+    ler(contador);
+
+    # Comentario multilinha
+    '''
+        Testando comentarios
+        com varias linhas.
+        Caracteres especiais: @ # $ % & *
+    '''
+]

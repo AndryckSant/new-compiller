@@ -1,0 +1,29 @@
+[
+    nat idade = 21;
+    int temperatura = -10;
+    real altura = 1.75;
+    texto nome = "Andryck";
+    simbolo letra = 'A';
+    binario ativo = verdadeiro;
+
+    # Comentario de linha
+
+    '''
+    Comentario
+    de varias linhas
+    '''
+
+    se (idade >= 18 && ativo == verdadeiro) [
+        imprimir("Maior de idade");
+    ] senao [
+        imprimir("Menor de idade");
+    ]
+
+    enquanto (idade > 0) [
+        idade = idade - 1;
+    ]
+
+    para (nat i = 0; i < 10; i = i + 1) [
+        imprimir(i);
+    ]
+]

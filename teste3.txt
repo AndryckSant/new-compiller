@@ -1,0 +1,58 @@
+
+[
+    # 1. Identificadores invalidos
+    nat 2idade = 10;
+    int 3temperatura = 25;
+    real 4_valor = 3.14;
+    texto 9mensagem = "Erro";
+
+    # 2. Caracteres invalidos
+    nat idade@ = 20;
+    int valor$ = 30;
+    real altura& = 1.75;
+    nat preco% = 100;
+    int codigo? = 50;
+
+    # 3. Numeros malformados
+    real numero1 = 10.;
+    real numero2 = .25;
+    real numero3 = 12.34.56;
+    real numero4 = 1..5;
+
+    # 4. Simbolos malformados
+    simbolo letra1 = '';
+    simbolo letra2 = 'AB';
+    simbolo letra3 = 'ABC';
+    simbolo letra4 = ';
+
+    # 5. Textos malformados
+    texto frase1 = "Texto sem fechamento;
+    texto frase2 = "Outro texto
+    texto frase3 = "Texto com @ e # e $";
+
+    # 6. Operadores isolados ou invalidos
+    nat resultado = 10;
+    resultado = resultado &&& 2;
+    resultado = resultado ||| 3;
+    resultado = resultado === 4;
+    resultado = resultado !! 5;
+    resultado = resultado ** 2;
+
+    # 7. Caracteres especiais inesperados
+    @
+    $
+    ?
+    &
+    %
+    ~
+
+    # 8. Tokens validos para verificar recuperacao
+    nat contador = 0;
+    contador = contador + 1;
+    imprimir("O analisador continua funcionando");
+
+    # 9. Comentario multilinha sem fechamento
+    '''
+    Este comentario nao sera fechado.
+    O arquivo termina aqui.
+]

@@ -1,0 +1,157 @@
+
+<bloco comandos> ::= <inicio bloco> <comandos> <fim bloco>
+
+<inicio bloco> ::= [
+<fim bloco> ::= ]
+
+<comandos> ::= <comando>
+             | <comando> <comandos>
+
+<comando> ::= <comando ler>
+            | <comando imprimir>
+            | <declaracao de variavel>
+            | <comando se>
+            | <comando para>
+            | <comando enquanto>
+            | <atribuicao de variavel>
+
+
+<comando ler> ::= ler ( <identificador> ) ;
+
+<comando imprimir> ::= imprimir ( <expressao> ) ;
+
+
+<declaracao de variavel> ::= <tipo> <identificador> <lista identificadores> ;
+                           | <tipo> <identificador> = <expressao> ;
+
+<lista identificadores> ::= , <identificador> <lista identificadores>
+                           | ε
+
+<atribuicao de variavel> ::= <identificador> = <expressao> ;
+
+
+<comando se> ::= se ( <expressao> ) <bloco comandos>
+               | se ( <expressao> ) <bloco comandos> senao <bloco comandos>
+
+<comando enquanto> ::= enquanto ( <expressao> ) <bloco comandos>
+
+<comando para> ::= para ( <inicializacao> ; <expressao> ; <atualizacao> ) <bloco comandos>
+
+<inicializacao> ::= <tipo> <identificador> = <expressao>
+                  | <identificador> = <expressao>
+
+<atualizacao> ::= <identificador> = <expressao>
+
+
+<expressao> ::= <expressao logica>
+
+
+<expressao logica> ::= <expressao logica> || <expressao e>
+                      | <expressao e>
+
+<expressao e> ::= <expressao e> && <expressao nao>
+                | <expressao nao>
+
+<expressao nao> ::= ! <expressao nao>
+                  | <expressao relacional>
+
+
+<expressao relacional> ::= <expressao deslocamento>
+                          | <expressao deslocamento> <operador relacional> <expressao deslocamento>
+
+<operador relacional> ::= >
+                        | >=
+                        | <
+                        | <=
+                        | ==
+                        | !=
+
+
+<expressao deslocamento> ::= <expressao deslocamento> << <expressao aditiva>
+                            | <expressao deslocamento> >> <expressao aditiva>
+                            | <expressao aditiva>
+
+
+<expressao aditiva> ::= <expressao aditiva> + <expressao multiplicativa>
+                      | <expressao aditiva> - <expressao multiplicativa>
+                      | <expressao multiplicativa>
+
+
+<expressao multiplicativa> ::= <expressao multiplicativa> * <expressao unaria>
+                             | <expressao multiplicativa> / <expressao unaria>
+                             | <expressao unaria>
+
+
+<expressao unaria> ::= - <expressao unaria>
+                     | <expressao potencia>
+
+
+<expressao potencia> ::= <expressao primaria> ^^ <expressao unaria>
+                       | <expressao primaria>
+
+
+<expressao primaria> ::= <numero>
+                       | <identificador>
+                       | <valor booleano>
+                       | <texto>
+                       | <simbolo>
+                       | ( <expressao> )
+
+
+<valor booleano> ::= verdadeiro
+                   | falso
+
+
+<tipo> ::= nat
+         | int
+         | real
+         | simbolo
+         | texto
+         | binario
+
+
+<identificador> ::= <inicio identificador> <continuacao identificador>
+
+<inicio identificador> ::= <letra>
+                         | _
+
+<continuacao identificador> ::= <letra>
+                              | <digito>
+                              | _
+                              | <letra> <continuacao identificador>
+                              | <digito> <continuacao identificador>
+                              | _ <continuacao identificador>
+
+<digito> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
+<letra> ::= a | b | c | ... | z
+          | A | B | C | ... | Z
+
+
+<numero> ::= <numero natural>
+           | <numero real>
+
+<numero natural> ::= <digito>
+                   | <digito> <numero natural>
+
+<numero real> ::= <numero natural> . <numero natural>
+
+
+<texto> ::= " <conteudo texto> "
+
+<simbolo> ::= ' <caractere> '
+
+<conteudo texto> ::= <caractere> <conteudo texto>
+                   | <sequencia escape> <conteudo texto>
+                   | ε
+
+<caractere> ::= <letra>
+              | <digito>
+              | <espaco>
+              | <caractere especial>
+
+<sequencia escape> ::= \ <caractere>
+
+<espaco> ::= " "
+
+<caractere especial> ::= ! | @ | # | $ | % | & | ...
