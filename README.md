@@ -1,77 +1,32 @@
 # Trabalho P1 - Compiladores
 
-Este repositório destina-se ao trabalho da disciplina de Compiladores. A solução consiste na especificação e implementação de um analisador léxico e sintático para uma linguagem fictícia.
-
+Este repositorio contem a especificacao e a implementacao de um analisador
+lexico e sintatico para a linguagem ficticia Zimbro.
 
 ## Objetivo
 
-Especificar uma linguagem fictícia e implementar seus analisadores léxico e sintático utilizando, respectivamente, JFlex e CUP.
+Especificar as regras formais da linguagem Zimbro e implementar os analisadores
+responsaveis por reconhecer e validar seus programas-fonte.
 
-Os analisadores deverão ser executados sobre arquivos-fonte da linguagem criada. A entrega deve conter:
+O projeto utiliza JFlex para a analise lexica e CUP para a analise sintatica.
 
-1. Especificação da gramática em BNF ou BNF estendida;
-2. Arquivo de especificação do JFlex;
-3. Arquivo de especificação do CUP;
-4. Três códigos-fonte corretos;
-5. Três códigos-fonte contendo erros de sintaxe.
+## Documentacao
 
-## Características da linguagem
+- [Especificacao formal da linguagem Zimbro](Docs/Linguagem-Zimbro.md)
 
-A linguagem deverá possuir os seguintes elementos:
+## Arquivos principais
 
-- Tipos de dados:
-  - inteiro;
-  - real;
-  - caracter;
-  - string.
-- Declaração de variáveis;
-- Atribuição de variáveis;
-- Expressões aritméticas;
-- Expressões lógicas;
-- Identificadores de início e fim de bloco de comandos;
-- Comandos:
-  - `printf`;
-  - `scanf`;
-  - `if else`;
-  - `for`;
-  - `while`.
+- `zimbro.flex`: especificacao do analisador lexico;
+- `zimbro.cup`: especificacao da gramatica sintatica;
+- `src/`: analisadores gerados em Java;
+- `Examples/`: exemplos validos e arquivos contendo erros.
 
-As regras da linguagem devem ser documentadas em uma gramática formal escrita em BNF ou BNF estendida.
+## Entrega
 
-## Analisador léxico
+A entrega contem:
 
-O analisador léxico deverá ser especificado com JFlex. Deve reconhecer, entre outros, os seguintes elementos da linguagem:
-
-- palavras reservadas;
-- identificadores;
-- tipos de dados;
-- números inteiros e reais;
-- literais caracter e string;
-- operadores aritméticos e lógicos;
-- operadores de atribuição e relacionais;
-- delimitadores de blocos;
-- separadores e pontuação.
-
-## Analisador sintático
-
-O analisador sintático deverá ser especificado com CUP e deve verificar se os arquivos-fonte respeitam a gramática definida.
-
-Para os códigos com erros de sintaxe, devem ser exibidas mensagens específicas sempre que possível, incluindo o número da linha em que o erro foi detectado no arquivo-fonte.
-
-## Casos de teste
-
-### Códigos corretos
-
-Preparar três arquivos-fonte válidos, com uma cobertura representativa das funcionalidades da linguagem, como declarações, atribuições, expressões aritméticas e lógicas e comandos de controle de fluxo.
-
-### Códigos com erros
-
-Preparar três arquivos-fonte contendo erros de sintaxe. Os casos devem permitir a demonstração de mensagens de erro específicas e da identificação da linha do erro.
-
-Exemplos de situações a serem testadas:
-
-- falta de ponto e vírgula;
-- ausência de parênteses ou chaves;
-- atribuição ou declaração mal formada;
-- uso incorreto de `if`, `for` ou `while`;
-- expressão incompleta.
+1. a especificacao da gramatica em BNF;
+2. o arquivo de especificacao JFlex;
+3. o arquivo de especificacao CUP;
+4. tres codigos-fonte validos;
+5. tres codigos-fonte com erros lexicos ou sintaticos.
