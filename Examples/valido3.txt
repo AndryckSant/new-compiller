@@ -1,0 +1,40 @@
+# Exemplo valido 3: operadores logicos, relacionais, deslocamento e potenciacao
+[
+    nat a = 12;
+    nat b, c;
+    real potencia;
+    binario pronto = falso;
+    texto titulo = "Operadores do Zimbro";
+    simbolo marca = '#';
+
+    '''
+    Comentario de varias linhas.
+    Demonstra deslocamento de bits e potenciacao.
+    '''
+
+    b = 5;
+    c = a << 2;
+    c = c >> 1;
+    potencia = 2 ^^ 8;
+    potencia = -2 ^^ 2;
+
+    imprimir(titulo);
+    imprimir(marca);
+    imprimir(c);
+    imprimir(potencia);
+
+    se ((a > b) && (a != 10) || pronto) [
+        imprimir("Condicao verdadeira");
+    ]
+
+    enquanto (a > 0 && !pronto) [
+        se (a == 3) [
+            pronto = verdadeiro;
+        ]
+        a = a - 1;
+    ]
+
+    para (b = b - 1; b > 0; b = b - 1) [
+        imprimir(b);
+    ]
+]

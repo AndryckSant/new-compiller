@@ -1,0 +1,28 @@
+# Exemplo valido 2: se/senao, enquanto, para e leitura de dados
+[
+    int contador = 0;
+    int limite = 5;
+    binario aprovado = falso;
+
+    ler(limite);
+
+    enquanto (contador < limite) [
+        contador = contador + 1;
+        se (contador == 3) [
+            imprimir("Tres");
+        ] senao [
+            imprimir(contador);
+        ]
+    ]
+
+    para (int i = 0; i < 3; i = i + 1) [
+        imprimir(i * 2);
+    ]
+
+    se (contador >= limite && !aprovado) [
+        aprovado = verdadeiro;
+        imprimir("Contagem concluida");
+    ] senao [
+        imprimir("Contagem incompleta");
+    ]
+]

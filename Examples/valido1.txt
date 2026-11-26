@@ -1,0 +1,20 @@
+# Exemplo valido 1: tipos, declaracoes, atribuicoes e expressoes aritmeticas
+[
+    nat idade = 20;
+    int temperatura = -5;
+    real altura = 1.75;
+    real media, soma;
+    texto nome = "Zimbro";
+    simbolo inicial = 'Z';
+    binario ativo = verdadeiro;
+
+    soma = altura + 0.25;
+    media = (10 + 20) / 2;
+    temperatura = temperatura + 1;
+    idade = idade * 2;
+
+    imprimir("Nome: ");
+    imprimir(nome);
+    imprimir(media);
+    imprimir(ativo);
+]

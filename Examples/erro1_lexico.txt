@@ -1,0 +1,21 @@
+# Exemplo com erros lexicos: o analisador reporta e continua a leitura
+[
+    nat 2idade = 10;
+    int 3temperatura = -5;
+
+    real altura@ = 1.75;
+    texto nome$ = "Zimbro";
+
+    # numero real malformado
+    real metade = 10.;
+    real outro = .5;
+
+    # simbolo com dois caracteres
+    simbolo letra = 'AB';
+
+    imprimir("Fim do arquivo com erros lexicos");
+]
+
+'''
+Comentario que nunca e fechado: o lexer deve reportar
+erro ao chegar no fim do arquivo.
