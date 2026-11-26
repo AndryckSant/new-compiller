@@ -1,0 +1,264 @@
+/* =====================================================================
+ *  Analisador Sintatico - CUP
+ *  Gramatica baseada na especificacao BNF da linguagem.
+ * ===================================================================== */
+
+import java_cup.runtime.*;
+
+/* ---------------------------------------------------------------------
+ *  Codigo do parser: tratamento de erros com linha/coluna
+ * --------------------------------------------------------------------- */
+parser code {:
+
+    public int errosSintaticos = 0;
+
+    /* Descobre o nome do token a partir do numero (funciona em qualquer
+       versao do CUP, sem depender de sym.terminalNames). */
+    private String nomeToken(int id) {
+        try {
+            for (java.lang.reflect.Field f : sym.class.getFields()) {
+                if (f.getType() == int.class && f.getInt(null) == id) {
+                    return f.getName();
+                }
+            }
+        } catch (Exception e) { }
+        return "TOKEN(" + id + ")";
+    }
+
+    private String descreve(Symbol s) {
+        if (s == null) return "fim de arquivo";
+        if (s.sym == sym.EOF) return "fim de arquivo";
+        String nome = nomeToken(s.sym);
+        return (s.value != null) ? nome + " '" + s.value + "'" : nome;
+    }
+
+    @Override
+    public void syntax_error(Symbol s) {
+        errosSintaticos++;
+        if (s != null && s.left >= 0) {
+            System.err.println("ERRO SINTATICO: token inesperado " + descreve(s)
+                + " na linha " + s.left + ", coluna " + s.right);
+        } else {
+            System.err.println("ERRO SINTATICO: token inesperado " + descreve(s));
+        }
+    }
+
+    @Override
+    public void unrecovered_syntax_error(Symbol s) throws Exception {
+        System.err.println("ERRO SINTATICO: nao foi possivel se recuperar do erro. Analise interrompida.");
+        throw new Exception("Erro sintatico irrecuperavel");
+    }
+
+    @Override
+    public void report_error(String message, Object info) {
+        /* mensagens ja tratadas em syntax_error */
+    }
+:};
+
+/* ---------------------------------------------------------------------
+ *  Terminais (devem bater com os nomes usados no linguagem.flex)
+ * --------------------------------------------------------------------- */
+
+/* tipos */
+terminal NAT, INT, REAL, SIMBOLO_TIPO, TEXTO_TIPO, BINARIO;
+
+/* comandos */
+terminal IMPRIMIR, LER, SE, SENAO, PARA, ENQUANTO;
+
+/* booleanos */
+terminal VERDADEIRO, FALSO;
+
+/* operadores */
+terminal E_LOGICO, OU_LOGICO, NAO_LOGICO;
+terminal DESLOCAMENTO_ESQUERDA, DESLOCAMENTO_DIREITA;
+terminal POTENCIACAO, SOMA, SUBTRACAO, MULTIPLICACAO, DIVISAO;
+terminal MAIOR_IGUAL, MENOR_IGUAL, IGUALDADE, DIFERENTE, MAIOR, MENOR;
+terminal ATRIBUICAO;
+
+/* delimitadores */
+terminal PONTO_VIRGULA, ABRE_PARENTESES, FECHA_PARENTESES;
+terminal ABRE_BLOCO, FECHA_BLOCO, VIRGULA;
+
+/* terminais com valor (lexema) */
+terminal String IDENTIFICADOR;
+terminal String NUMERO_INTEIRO;
+terminal String NUMERO_REAL;
+terminal String TEXTO;
+terminal String SIMBOLO;
+
+/* terminal "fantasma", usado so para dar precedencia ao menos unario */
+terminal UMENOS;
+
+/* ---------------------------------------------------------------------
+ *  Nao-terminais
+ * --------------------------------------------------------------------- */
+non terminal programa;
+non terminal bloco_comandos;
+non terminal comandos;
+non terminal comando;
+non terminal comando_ler;
+non terminal comando_imprimir;
+non terminal declaracao_variavel;
+non terminal lista_identificadores;
+non terminal atribuicao_variavel;
+non terminal atribuicao_simples;
+non terminal comando_se;
+non terminal comando_enquanto;
+non terminal comando_para;
+non terminal inicializacao;
+non terminal atualizacao;
+non terminal tipo;
+non terminal expressao;
+
+/* ---------------------------------------------------------------------
+ *  Precedencia (da MENOR para a MAIOR)
+ *
+ *  ||  <  &&  <  !  <  relacionais  <  << >>  <  + -  <  * /  <  - unario  <  ^^
+ *
+ *  - O "!" fica abaixo dos relacionais porque, na BNF, ele se aplica a uma
+ *    <expressao logica> inteira:  !a > b  equivale a  !(a > b).
+ *  - Relacionais sao nao-associativos: na BNF a relacional e
+ *    <aritmetica> op <aritmetica>, entao  a < b < c  e erro.
+ *  - ^^ liga mais forte que o menos unario (BNF: unaria ::= - unaria | potencia),
+ *    entao  -2^^2  equivale a  -(2^^2). E associativo a esquerda, como na BNF.
+ * --------------------------------------------------------------------- */
+precedence left     OU_LOGICO;
+precedence left     E_LOGICO;
+precedence right    NAO_LOGICO;
+precedence nonassoc MAIOR, MAIOR_IGUAL, MENOR, MENOR_IGUAL, IGUALDADE, DIFERENTE;
+precedence left     DESLOCAMENTO_ESQUERDA, DESLOCAMENTO_DIREITA;
+precedence left     SOMA, SUBTRACAO;
+precedence left     MULTIPLICACAO, DIVISAO;
+precedence right    UMENOS;
+precedence left     POTENCIACAO;
+
+start with programa;
+
+/* =====================================================================
+ *  Gramatica
+ * ===================================================================== */
+
+/* O programa e um bloco de comandos: [ ... ] */
+programa ::= bloco_comandos
+           ;
+
+/* <bloco comandos> ::= <inicio bloco> <comandos> <fim bloco> */
+bloco_comandos ::= ABRE_BLOCO comandos FECHA_BLOCO
+                 ;
+
+/* <comandos> ::= <comando> | <comando><comandos>
+   (escrito com recursao a esquerda, que e o ideal para LALR) */
+comandos ::= comando
+           | comandos comando
+           ;
+
+comando ::= comando_ler
+          | comando_imprimir
+          | declaracao_variavel
+          | comando_se
+          | comando_para
+          | comando_enquanto
+          | atribuicao_variavel
+          /* recuperacao de erro: descarta tokens ate o proximo ';' */
+          | error PONTO_VIRGULA
+          ;
+
+/* <comando ler> ::= ler(<identificador>); */
+comando_ler ::= LER ABRE_PARENTESES IDENTIFICADOR FECHA_PARENTESES PONTO_VIRGULA
+              ;
+
+/* <comando imprimir> ::= imprimir(<expressao>); */
+comando_imprimir ::= IMPRIMIR ABRE_PARENTESES expressao FECHA_PARENTESES PONTO_VIRGULA
+                   ;
+
+/* <declaracao de variavel> ::= <tipo> <identificador> {, <identificador>};
+                              | <tipo> <identificador> = <expressao>;       */
+declaracao_variavel ::= tipo lista_identificadores PONTO_VIRGULA
+                      | tipo IDENTIFICADOR ATRIBUICAO expressao PONTO_VIRGULA
+                      ;
+
+lista_identificadores ::= IDENTIFICADOR
+                        | lista_identificadores VIRGULA IDENTIFICADOR
+                        ;
+
+/* <atribuicao de variavel> ::= <identificador> = <expressao>; */
+atribuicao_variavel ::= atribuicao_simples PONTO_VIRGULA
+                      ;
+
+/* atribuicao sem ';' - reaproveitada no "para" */
+atribuicao_simples ::= IDENTIFICADOR ATRIBUICAO expressao
+                     ;
+
+/* <comando se> ::= se(<expressao>) <bloco comandos>
+                  | se(<expressao>) <bloco comandos> senao <bloco comandos> */
+comando_se ::= SE ABRE_PARENTESES expressao FECHA_PARENTESES bloco_comandos
+             | SE ABRE_PARENTESES expressao FECHA_PARENTESES bloco_comandos SENAO bloco_comandos
+             ;
+
+/* <comando enquanto> ::= enquanto(<expressao>) <bloco comandos> */
+comando_enquanto ::= ENQUANTO ABRE_PARENTESES expressao FECHA_PARENTESES bloco_comandos
+                   ;
+
+/* <comando para> ::= para(<inicializacao>; <expressao>; <atualizacao>) <bloco comandos> */
+comando_para ::= PARA ABRE_PARENTESES inicializacao PONTO_VIRGULA expressao PONTO_VIRGULA
+                 atualizacao FECHA_PARENTESES bloco_comandos
+               ;
+
+/* <inicializacao> ::= <tipo> <identificador> = <expressao> | <identificador> = <expressao> */
+inicializacao ::= tipo IDENTIFICADOR ATRIBUICAO expressao
+                | atribuicao_simples
+                ;
+
+/* <atualizacao> ::= <identificador> = <expressao> */
+atualizacao ::= atribuicao_simples
+              ;
+
+/* <tipo> ::= nat | int | real | simbolo | texto | binario */
+tipo ::= NAT
+       | INT
+       | REAL
+       | SIMBOLO_TIPO
+       | TEXTO_TIPO
+       | BINARIO
+       ;
+
+/* ---------------------------------------------------------------------
+ *  Expressoes
+ *  Os niveis da BNF (logica, relacional, aditiva, multiplicativa, unaria,
+ *  potencia, primaria) estao codificados na tabela de precedencia acima.
+ * --------------------------------------------------------------------- */
+expressao ::= /* logicas */
+              expressao OU_LOGICO expressao
+            | expressao E_LOGICO  expressao
+            | NAO_LOGICO expressao
+
+              /* relacionais */
+            | expressao MAIOR       expressao
+            | expressao MAIOR_IGUAL expressao
+            | expressao MENOR       expressao
+            | expressao MENOR_IGUAL expressao
+            | expressao IGUALDADE   expressao
+            | expressao DIFERENTE   expressao
+
+              /* deslocamento de bits */
+            | expressao DESLOCAMENTO_ESQUERDA expressao
+            | expressao DESLOCAMENTO_DIREITA  expressao
+
+              /* aritmeticas */
+            | expressao SOMA          expressao
+            | expressao SUBTRACAO     expressao
+            | expressao MULTIPLICACAO expressao
+            | expressao DIVISAO       expressao
+            | expressao POTENCIACAO   expressao
+            | SUBTRACAO expressao   %prec UMENOS
+
+              /* primarias */
+            | ABRE_PARENTESES expressao FECHA_PARENTESES
+            | NUMERO_INTEIRO
+            | NUMERO_REAL
+            | IDENTIFICADOR
+            | VERDADEIRO
+            | FALSO
+            | TEXTO
+            | SIMBOLO
+            ;
