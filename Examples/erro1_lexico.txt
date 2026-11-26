@@ -17,5 +17,4 @@
 ]
 
 '''
-Comentario que nunca e fechado: o lexer deve reportar
-erro ao chegar no fim do arquivo.
+Comentario que nunca e fechado. Isso é um erro.
